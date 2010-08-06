@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/moonshado-mass.rb",
      "lib/moonshadosms/sender.rb",
+     "moonshado-mass.gemspec",
      "test/helper.rb",
      "test/test_moonshado-mass.rb"
   ]
