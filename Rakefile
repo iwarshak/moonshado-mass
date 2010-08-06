@@ -5,12 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "moonshado-mass"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %q{Send bulk SMS messages through Moonshado}
+    gem.description = %q{Send bulk SMS messages through Moonshado}
     gem.email = "iwarshak@stripey.net"
     gem.homepage = "http://github.com/iwarshak/moonshado-mass"
     gem.authors = ["Ian Warshak"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.add_dependency "rest-client", ">=1.6.0"
+    gem.files.include 'lib/moonshadosms/**'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
