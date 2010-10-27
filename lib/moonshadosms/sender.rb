@@ -54,7 +54,7 @@ module Moonshadosms
           end
         rescue
           logger.error("Caught exception sending message to #{recipient}. Code: #{code} Info: #{info} Error: #{response}") if logger
-          mailer_callback.call("Exception in Moonshado SMS", "#{response.body}") if @mailer_callback
+          mailer_callback.call("Exception in Moonshado SMS", "#{response.body}") if response && @mailer_callback
         end        
       end
     end
