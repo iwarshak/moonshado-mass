@@ -56,7 +56,11 @@ module Moonshadosms
             error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
         rescue => ex
-          response_string = (response && response.respond_to?(body)) ? response.body : ex.inspect
+          if response && response.respond_to?(body)
+            response_str = "#{response.body}\n#{d}\n#{ex.inspect}"
+          else
+            response_str = "#{d}\n#{ex.inspect}"
+          end
           logger.error("Caught exception sending message to #{recipient}. Error: #{response_string}") if logger
           mailer_callback.call("Exception in Moonshado SMS", "#{response_string}") if mailer_callback
           exception_callback.call(ex, d.merge(:response => response_string)) if exception_callback
