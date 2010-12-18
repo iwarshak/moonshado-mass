@@ -57,7 +57,6 @@ module Moonshadosms
           end
         rescue => ex
           response_string = (response && response.respond_to?(body)) ? response.body : ex.inspect
-          require 'rubygems'; require 'ruby-debug'; debugger
           logger.error("Caught exception sending message to #{recipient}. Error: #{response_string}") if logger
           mailer_callback.call("Exception in Moonshado SMS", "#{response_string}") if mailer_callback
           exception_callback.call(ex, d.merge(:response => response_string)) if exception_callback
