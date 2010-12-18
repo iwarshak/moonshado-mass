@@ -4,7 +4,7 @@ module Moonshadosms
   API_ENDPOINT = 'api.moonshado.com'
   
   class Sender
-    attr_accessor :originating_address, :api_key, :token, :logger, :mailer_callback, :response_callbacks, :keyword
+    attr_accessor :originating_address, :api_key, :token, :logger, :mailer_callback, :response_callbacks, :keyword, :exception_callback, :error_callback
     
     def initialize(originating_address, keyword, api_key)
       @originating_address = originating_address
@@ -38,6 +38,7 @@ module Moonshadosms
                 :body => text
               }
         }
+        response = nil
         begin
           response = RestClient.post "https://#{API_ENDPOINT}/gateway/sms", d
           code = Crack::XML.parse(response)["status"]["code"] rescue nil
@@ -49,12 +50,16 @@ module Moonshadosms
               response_callback.call(:recipient => recipient, :moonshado_claimcheck => moonshado_claimcheck )
             end
           else
-            logger.error("Could not send message to #{recipient}. Code: #{code} Info: #{info} Error: #{response}") if logger
-            mailer_callback.call("Error in Moonshado SMS", "#{response}") if @mailer_callback
+            error_str = "Could not send message to #{recipient}. Code: #{code} Info: #{info} Error: #{response}"
+            logger.error(error_str) if logger
+            mailer_callback.call("Error in Moonshado SMS", error_str) if mailer_callback
+            error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
-        rescue
-          logger.error("Caught exception sending message to #{recipient}. Code: #{code} Info: #{info} Error: #{response}") if logger
-          mailer_callback.call("Exception in Moonshado SMS", "#{response.body}") if response && @mailer_callback
+        rescue => ex
+          response_string = (response && response.respond_to?(body)) ? response.body : ex.backtrace
+          logger.error("Caught exception sending message to #{recipient}. Error: #{response_string}") if logger
+          mailer_callback.call("Exception in Moonshado SMS", "#{response_string}") if mailer_callback
+          exception_callback.call(ex, d.merge(:response => response_string)) if exception_callback
         end        
       end
     end
