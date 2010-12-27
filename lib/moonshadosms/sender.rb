@@ -56,7 +56,7 @@ module Moonshadosms
             error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
         rescue => ex
-          if response && response.respond_to?(body)
+          if response && response.respond_to?(:body)
             response_string = "#{response.body}\n#{d}\n#{ex.inspect}"
           else
             response_string = "#{d}\n#{ex.inspect}"
