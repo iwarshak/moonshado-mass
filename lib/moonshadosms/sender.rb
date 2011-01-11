@@ -11,6 +11,7 @@ module Moonshadosms
       @api_key = api_key
       @keyword = keyword
       @response_callbacks = []
+      require 'rubygems'; require 'ruby-debug'; debugger
     end
     
     def status(moonshado_claimcheck)
@@ -23,7 +24,6 @@ module Moonshadosms
     end
     
     def deliver(message, recipients = [])
-      require 'rubygems'; require 'ruby-debug'; debugger
       text = prepare_text(message)
       send_time = Time.now
       recipients.each do |recipient|
@@ -56,9 +56,7 @@ module Moonshadosms
             mailer_callback.call("Error in Moonshado SMS", error_str) if mailer_callback
             error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
-        rescue => ex
-          require 'rubygems'; require 'ruby-debug'; debugger
-          
+        rescue => ex          
           if response && response.respond_to?(:body)
             response_string = "#{response.body}\n#{d}\n#{ex.inspect}"
           else
