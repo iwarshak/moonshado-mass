@@ -23,6 +23,7 @@ module Moonshadosms
     end
     
     def deliver(message, recipients = [])
+      require 'rubygems'; require 'ruby-debug'; debugger
       text = prepare_text(message)
       send_time = Time.now
       recipients.each do |recipient|
@@ -42,7 +43,7 @@ module Moonshadosms
         begin
           response = RestClient.post "https://#{API_ENDPOINT}/gateway/sms", d
           code = Crack::XML.parse(response)["status"]["code"] rescue nil
-          info = Crack::XML.parse(response)["status"]["info"] rescue nil
+          info = Crack::XML.parse(response)["status"]["info"] rescue nil          
           if code == "10"
             logger.info("response #{response}") if logger
             logger.info("Sent #{message} to #{recipient} Info: #{info}") if logger
@@ -56,6 +57,8 @@ module Moonshadosms
             error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
         rescue => ex
+          require 'rubygems'; require 'ruby-debug'; debugger
+          
           if response && response.respond_to?(:body)
             response_string = "#{response.body}\n#{d}\n#{ex.inspect}"
           else
