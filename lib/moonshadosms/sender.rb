@@ -11,7 +11,6 @@ module Moonshadosms
       @api_key = api_key
       @keyword = keyword
       @response_callbacks = []
-      require 'rubygems'; require 'ruby-debug'; debugger
     end
     
     def status(moonshado_claimcheck)
