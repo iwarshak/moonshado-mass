@@ -51,15 +51,16 @@ module Moonshadosms
             end
           else
             error_str = "Could not send message to #{recipient}. Code: #{code} Info: #{info} Error: #{response}"
-            logger.error(error_str) if logger
+            logger.error("Error in Moonshado SMS #{error_str}") if logger
             mailer_callback.call("Error in Moonshado SMS", error_str) if mailer_callback
             error_callback.call("Error in Moonshado SMS. #{error_str}") if error_callback
           end
-        rescue => ex          
+        rescue => ex
+          exception_class = ex.class          
           if response && response.respond_to?(:body)
-            response_string = "#{response.body}\n#{d}\n#{ex.inspect}"
+            response_string = "Exception: #{exception_class} - #{response.body}\n#{d}\n#{ex.inspect}"
           else
-            response_string = "#{d}\n#{ex.inspect}"
+            response_string = "Exception: #{exception_class} - #{d}\n#{ex.inspect}"
           end
           logger.error("Caught exception sending message to #{recipient}. Error: #{response_string}") if logger
           mailer_callback.call("Exception in Moonshado SMS", "#{response_string}") if mailer_callback
