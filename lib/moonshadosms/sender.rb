@@ -1,4 +1,10 @@
-require 'md5'
+if RUBY_VERSION =~ /1\.9/
+  require 'digest/md5'
+end
+
+if RUBY_VERSION =~ /1.8/
+  require 'md5'
+end
 
 module Moonshadosms
   API_ENDPOINT = 'api.moonshado.com'
@@ -26,7 +32,11 @@ module Moonshadosms
       text = prepare_text(message)
       send_time = Time.now
       recipients.each do |recipient|
-        moonshado_claimcheck = MD5.md5(Time.now.to_s + rand.to_s + recipient).to_s
+        if RUBY_VERSION =~ /1\.9/
+          moonshado_claimcheck = Digest::MD5.hexdigest(Time.now.to_s + rand.to_s + recipient).to_s
+        elsif RUBY_VERSION =~ /1.8/
+          moonshado_claimcheck = MD5.md5(Time.now.to_s + rand.to_s + recipient).to_s
+        end
         d = {
               :api_key => @api_key,
               :message => {
